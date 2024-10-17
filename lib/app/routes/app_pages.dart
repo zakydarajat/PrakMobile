@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:myapp/app/modules/task/bindings/http_binding.dart';
+import 'package:myapp/app/modules/task/views/http_view.dart';
+import 'package:myapp/app/modules/webview/bindings/webview_binding.dart';
+import 'package:myapp/app/modules/webview/views/webview_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -26,6 +30,16 @@ class AppPages {
       name: _Paths.HOME,
       page: () => HomePage(),
       binding: HomeBindings(),
+    ),
+    GetPage(
+      name: _Paths.HTTP,
+      page: () => HttpView(),
+      binding: HttpBinding(),
+    ),
+    GetPage(
+      name: _Paths.WEBVIEW,
+      page: () => ToDoWebView(),
+      binding: WebViewBinding(),
     )
   ];
 }

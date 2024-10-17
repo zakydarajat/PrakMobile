@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/app/modules/task/bindings/http_binding.dart';
+import 'package:myapp/app/modules/webview/bindings/webview_binding.dart';
+import 'package:myapp/app/modules/webview/views/webview_view.dart';
 // import 'package:get/get.dart';
 // import 'package:myapp/app/data/models/todo_app.dart';
 // import '../../../data/services/http_controller.dart'; // Sesuaikan path
@@ -214,7 +216,9 @@ class _HomePage extends State<HomePage> {
                   IconButton(
                     icon:
                         Icon(Icons.info_outline, color: Colors.black, size: 24),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => ToDoWebView(), binding: WebViewBinding());
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.settings, color: Colors.black),
