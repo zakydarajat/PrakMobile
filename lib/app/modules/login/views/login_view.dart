@@ -1,69 +1,137 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
-import '../../home/views/home_view.dart';
+import '../../signup/views/signup_view.dart';
 import 'package:myapp/app/routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Color(0xFF4CAF50); // Muted Emerald Green
+    final accentColor = Color(0xFFD08159); // Soft Blush Pink
+    final backgroundColor = Color(0xFFFAFAFA); // Warm White
+    final fieldColor = Color(0xFFF0F4F8); // Light Sage Grey
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 50),
-                Text(
-                  "Log In",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                // Circular logo or placeholder at the top for branding
+                Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/app_logo.png'), // Add your app logo here
+                    backgroundColor: Colors.transparent,
                   ),
                 ),
-                SizedBox(height: 50),
-                _buildTextField(Icons.email, "Email"),
-                SizedBox(height: 20),
-                _buildTextField(Icons.lock, "Password", isPassword: true),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.to(HomePage());
-                    Get.to(Routes.HOME);
-                  },
+                SizedBox(height: 40),
+                Center(
                   child: Text(
-                    'Login',
+                    "Welcome Back!",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    minimumSize: Size(double.infinity, 50),
+                ),
+                SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    "Log in to continue",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                    ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  "Login dengan:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                SizedBox(height: 40),
+                _buildTextField(
+                  hintText: "Email",
+                  isPassword: false,
+                  fieldColor: fieldColor,
+                ),
+                SizedBox(height: 16),
+                Obx(() => _buildTextField(
+                      hintText: "Password",
+                      isPassword: true,
+                      fieldColor: fieldColor,
+                      isVisible: controller.isPasswordVisible.value,
+                      onVisibilityPressed: controller.togglePasswordVisibility,
+                    )),
+                SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(Routes.HOME);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14.0),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                      shadowColor: primaryColor.withOpacity(0.2),
+                    ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildSocialButton('assets/google_logo.png'),
-                    SizedBox(width: 20),
-                    _buildSocialButton('assets/facebook_logo.png'),
-                  ],
+                SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    "Or sign in with",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 16),
+                _buildSocialButtons(primaryColor),
+                SizedBox(height: 32),
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have an account? ",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade800,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "Sign up",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: accentColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Get.to(SignupView());
+                              Get.toNamed(Routes.SIGNUP);
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -72,28 +140,79 @@ class LoginView extends GetView<LoginController> {
     );
   }
 
-  Widget _buildTextField(IconData icon, String hintText,
-      {bool isPassword = false}) {
+  Widget _buildTextField({
+    required String hintText,
+    required bool isPassword,
+    required Color fieldColor,
+    bool isVisible = false,
+    Function()? onVisibilityPressed,
+  }) {
     return TextField(
-      obscureText: isPassword,
+      obscureText: isPassword && !isVisible,
+      style: TextStyle(color: Color(0xFF333333)),
       decoration: InputDecoration(
-        prefixIcon: Icon(icon),
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        fillColor: Colors.grey[300],
+        hintStyle: TextStyle(color: Colors.grey.shade500),
         filled: true,
+        fillColor: fieldColor,
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Colors.grey.shade400,
+            width: 1.2,
+          ),
+        ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  isVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey.shade500,
+                ),
+                onPressed: onVisibilityPressed,
+              )
+            : null,
       ),
     );
   }
 
-  Widget _buildSocialButton(String assetPath) {
+  Widget _buildSocialButtons(Color borderColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildSocialButton('assets/google_logo.png', borderColor),
+        SizedBox(width: 16),
+        _buildSocialButton('assets/facebook_logo.png', borderColor),
+      ],
+    );
+  }
+
+  Widget _buildSocialButton(String assetPath, Color borderColor) {
     return GestureDetector(
-      onTap: () {},
-      child: CircleAvatar(
-        radius: 25,
-        backgroundImage: AssetImage(assetPath),
+      onTap: () {
+        Get.toNamed(Routes.HOME); // Direct to the same page as login
+      },
+      child: Container(
+        width: 48,
+        height: 48,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: borderColor.withOpacity(0.3), width: 1),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: borderColor.withOpacity(0.05),
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Image.asset(assetPath),
       ),
     );
   }
