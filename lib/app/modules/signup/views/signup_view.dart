@@ -1,113 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myapp/app/modules/login/views/login_view.dart';
 import 'package:myapp/app/modules/signup/controllers/signup_controllers.dart';
 import 'package:myapp/app/routes/app_pages.dart';
-//import '../../../routes/app_routes.dart'; // Pastikan rute tersedia
 
 class SignupView extends GetView<SignupController> {
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Color(0xFF4CAF50); // Muted Emerald Green
+    final accentColor = Color(0xFF8E44AD); // Rich Purple Accent
+    final backgroundColor = Color(0xFFF8F9FA); // Light Warm Grey
+    final fieldColor = Color(0xFFF2F3F5); // Very Light Grey for input fields
+
+    // Ensure the controller is initialized
+    final SignupController controller = Get.put(SignupController());
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 50),
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 78, 148, 81),
-                    borderRadius: BorderRadius.circular(10),
+                SizedBox(height: 40),
+                Center(
+                  child: Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Daftar',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
+                SizedBox(height: 24),
                 _buildTextField(
-                  icon: Icons.person,
                   hint: 'Username',
                   isPassword: false,
+                  fieldColor: fieldColor,
+                  onChanged: (value) => controller.username.value = value,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 16),
                 _buildTextField(
-                  icon: Icons.email,
                   hint: 'Email',
                   isPassword: false,
+                  fieldColor: fieldColor,
+                  onChanged: (value) => controller.email.value = value,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 16),
                 Obx(() => _buildTextField(
-                      icon: Icons.lock,
                       hint: 'Password',
                       isPassword: true,
                       isVisible: controller.isPasswordVisible.value,
+                      fieldColor: fieldColor,
                       onVisibilityPressed: controller.togglePasswordVisibility,
+                      onChanged: (value) => controller.password.value = value,
                     )),
-                SizedBox(height: 10),
+                SizedBox(height: 16),
                 Obx(() => _buildTextField(
-                      icon: Icons.lock,
-                      hint: 'RePassword',
+                      hint: 'Re-enter Password',
                       isPassword: true,
                       isVisible: controller.isRePasswordVisible.value,
-                      onVisibilityPressed:
-                          controller.toggleRePasswordVisibility,
+                      fieldColor: fieldColor,
+                      onVisibilityPressed: controller.toggleRePasswordVisibility,
+                      onChanged: (value) => controller.rePassword.value = value,
                     )),
-                SizedBox(height: 20),
+                SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () {
-                    // Logic untuk sign up bisa ditambahkan di sini
-                  },
-                  child: Text(
-                    'Daftar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold, // Menjadikan teks bold
-                      color: Colors.white,
+                  onPressed: controller.signup,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                    shadowColor: primaryColor.withOpacity(0.2),
                   ),
                 ),
-                SizedBox(height: 20),
-
-                // Bagian baru untuk teks dan button Log In
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sudah punya akun?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Routing ke halaman Log In menggunakan GetX
-                        // Get.toNamed(Routes.LOGIN); // Routes.LOGIN harus didefinisikan di routes
-                        Get.to(LoginView());
-                        Get.to(Routes.LOGIN);
-                      },
-                      child: Text(
-                        'Log in',
+                SizedBox(height: 24),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Get.toNamed(Routes.LOGIN);
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Already have an account? ',
                         style: TextStyle(
-                          fontSize: 16,
-                          color:
-                              Colors.purple, // Ubah warna teks sesuai kebutuhan
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.grey.shade800,
                         ),
+                        children: [
+                          TextSpan(
+                            text: 'Log in',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: accentColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -118,31 +125,44 @@ class SignupView extends GetView<SignupController> {
   }
 
   Widget _buildTextField({
-    required IconData icon,
     required String hint,
+    required Color fieldColor,
     bool isPassword = false,
     bool isVisible = false,
     Function()? onVisibilityPressed,
+    Function(String)? onChanged,
   }) {
     return TextField(
       obscureText: isPassword && !isVisible,
+      onChanged: onChanged,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon),
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey.shade600),
+        filled: true,
+        fillColor: fieldColor,
+        contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Colors.grey.shade400,
+            width: 1.2,
+          ),
+        ),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
                   isVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey.shade600,
                 ),
                 onPressed: onVisibilityPressed,
               )
             : null,
-        hintText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade300,
       ),
+      style: TextStyle(fontSize: 16),
     );
   }
 }
