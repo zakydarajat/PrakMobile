@@ -7,11 +7,7 @@ import 'package:myapp/app/modules/webview/bindings/webview_binding.dart';
 import 'package:myapp/app/modules/webview/views/webview_view.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-<<<<<<< HEAD
   final Color primaryColor = Color(0xff34794e);
-=======
-  final Color primaryColor = Color(0xff34794e); // Define your primaryColor here
->>>>>>> 8338f254fca5d413caf11ce95cc466c99a7b12f3
 
   // Initialize the NavBarController
   final NavBarController navBarController = Get.put(NavBarController());
@@ -50,11 +46,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 1,
             onTap: () {
               navBarController.updateIndex(1);
-<<<<<<< HEAD
               Get.offAll(() => HttpView(), binding: HttpBinding());
-=======
-              Get.to(() => HttpView(), binding: HttpBinding());
->>>>>>> 8338f254fca5d413caf11ce95cc466c99a7b12f3
             },
           ),
           _buildCenterButton(),
@@ -73,11 +65,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 3,
             onTap: () {
               navBarController.updateIndex(3);
-<<<<<<< HEAD
               // Navigate to settings or implement settings logic
-=======
-              // Navigate to settings if needed
->>>>>>> 8338f254fca5d413caf11ce95cc466c99a7b12f3
             },
           ),
         ],
@@ -141,13 +129,9 @@ class CustomBottomNavBar extends StatelessWidget {
       child: IconButton(
         icon: Icon(Icons.add, color: Colors.white, size: 30),
         onPressed: () {
-<<<<<<< HEAD
           // Define the action for the central button here
           // For example, navigate to a task creation page or open a modal
           Get.toNamed('/add-task');
-=======
-          // Define the action for the central button
->>>>>>> 8338f254fca5d413caf11ce95cc466c99a7b12f3
         },
       ),
     );
