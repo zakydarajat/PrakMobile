@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
@@ -5,40 +7,69 @@ class LoginController extends GetxController {
   var password = ''.obs;
   var isPasswordVisible = false.obs;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   // Function to toggle password visibility
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  // Function to handle user login
-  void login() {
-    if (email.value.isNotEmpty && password.value.isNotEmpty) {
-      // Perform login logic, e.g., authentication check
-      if (_validateCredentials(email.value, password.value)) {
-        // Assume successful login, navigate to home
+  // Function to validate login form
+  bool validateLoginForm() {
+    if (email.value.isEmpty || password.value.isEmpty) {
+      Get.snackbar('Error', 'Email and Password are required',
+          snackPosition: SnackPosition.BOTTOM);
+      return false;
+    }
+    return true;
+  }
+
+  // Function to handle login process
+  Future<void> login() async {
+    if (validateLoginForm()) {
+      try {
+        // Sign in with Firebase Authentication
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email.value.trim(),
+          password: password.value.trim(),
+        );
+
+        // Fetch user data from Firestore
+        DocumentSnapshot userDoc = await _firestore
+            .collection('users')
+            .doc(userCredential.user?.uid)
+            .get();
+
+        if (userDoc.exists) {
+          var userData = userDoc.data() as Map<String, dynamic>;
+          print('User Data: ${userData['email']}');
+        }
+
+        Get.snackbar('Success', 'Login successful!',
+            snackPosition: SnackPosition.BOTTOM);
+
+        // Navigate to home page
         Get.toNamed('/home');
-      } else {
-        // Show error message if credentials are invalid
-        Get.snackbar('Login Failed', 'Invalid email or password',
+      } catch (e) {
+        String errorMessage;
+        if (e is FirebaseAuthException) {
+          switch (e.code) {
+            case 'user-not-found':
+              errorMessage = 'User not found. Please check your email.';
+              break;
+            case 'wrong-password':
+              errorMessage = 'Invalid password. Please try again.';
+              break;
+            default:
+              errorMessage = 'Login failed. Please try again.';
+          }
+        } else {
+          errorMessage = 'An unknown error occurred.';
+        }
+        Get.snackbar('Login Error', errorMessage,
             snackPosition: SnackPosition.BOTTOM);
       }
-    } else {
-      // Show error message if fields are empty
-      Get.snackbar('Error', 'Please fill in all fields',
-          snackPosition: SnackPosition.BOTTOM);
     }
-  }
-
-  // Private method to validate user credentials (for demonstration purposes)
-  bool _validateCredentials(String email, String password) {
-    // Placeholder logic, replace with actual authentication mechanism
-    return email == 'user@example.com' && password == 'password123';
-  }
-
-  // Function to reset the login form
-  void resetForm() {
-    email.value = '';
-    password.value = '';
-    isPasswordVisible.value = false;
   }
 }

@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '924039641295',
     projectId: 'codelab-a6e5d',
     authDomain: 'codelab-a6e5d.firebaseapp.com',
-    storageBucket: 'codelab-a6e5d.appspot.com',
+    storageBucket: 'codelab-a6e5d.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:924039641295:android:0d8756c078b4026ccf9fba',
     messagingSenderId: '924039641295',
     projectId: 'codelab-a6e5d',
-    storageBucket: 'codelab-a6e5d.appspot.com',
+    storageBucket: 'codelab-a6e5d.firebasestorage.app',
   );
 
 }
