@@ -1,0 +1,49 @@
+com.example.myapp-google-services-0 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\generated\res\google-services\debug
+com.example.myapp-pngs-1 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\generated\res\pngs\debug
+com.example.myapp-resValues-2 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\generated\res\resValues\debug
+com.example.myapp-rs-3 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\generated\res\rs\debug
+com.example.myapp-mergeDebugResources-4 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.example.myapp-mergeDebugResources-5 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.example.myapp-merged_res-6 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\build\intermediates\merged_res\debug
+com.example.myapp-debug-7 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\src\debug\res
+com.example.myapp-main-8 C:\Praktikum Semester 5\Mobile\prakmodul4\PrakMobile\android\app\src\main\res
+com.example.myapp-jetified-tracing-1.2.0-9 C:\Users\mluth\.gradle\caches\transforms-3\05a12c3916f8d04e40608f02e45b365b\transformed\jetified-tracing-1.2.0\res
+com.example.myapp-jetified-window-1.2.0-10 C:\Users\mluth\.gradle\caches\transforms-3\0f3d7cc1ec382c4ebc3214905b4755d9\transformed\jetified-window-1.2.0\res
+com.example.myapp-localbroadcastmanager-1.1.0-11 C:\Users\mluth\.gradle\caches\transforms-3\0ffb37d776ecbf0a773f837477bb023f\transformed\localbroadcastmanager-1.1.0\res
+com.example.myapp-jetified-play-services-base-18.0.1-12 C:\Users\mluth\.gradle\caches\transforms-3\102acbd1b49fe84069cb949b7381ab75\transformed\jetified-play-services-base-18.0.1\res
+com.example.myapp-jetified-datastore-preferences-1.0.0-13 C:\Users\mluth\.gradle\caches\transforms-3\155be9bdc25add18deaba34b3c5d473a\transformed\jetified-datastore-preferences-1.0.0\res
+com.example.myapp-browser-1.4.0-14 C:\Users\mluth\.gradle\caches\transforms-3\26b71b44c257278b16207472cccc1303\transformed\browser-1.4.0\res
+com.example.myapp-jetified-startup-runtime-1.1.1-15 C:\Users\mluth\.gradle\caches\transforms-3\2f4ddc68f5199b21b8018ab6a9a1d795\transformed\jetified-startup-runtime-1.1.1\res
+com.example.myapp-jetified-play-services-basement-18.3.0-16 C:\Users\mluth\.gradle\caches\transforms-3\31ee431e5843c6e0f3dd1f689c274714\transformed\jetified-play-services-basement-18.3.0\res
+com.example.myapp-jetified-lifecycle-process-2.7.0-17 C:\Users\mluth\.gradle\caches\transforms-3\358e6239f4d76f544f0d70ff24cf415a\transformed\jetified-lifecycle-process-2.7.0\res
+com.example.myapp-fragment-1.7.1-18 C:\Users\mluth\.gradle\caches\transforms-3\35c8ab68c9d327405ae02174622e6861\transformed\fragment-1.7.1\res
+com.example.myapp-jetified-profileinstaller-1.3.1-19 C:\Users\mluth\.gradle\caches\transforms-3\3f1cceaa5b21663f7ffe0625f0fd11fa\transformed\jetified-profileinstaller-1.3.1\res
+com.example.myapp-jetified-core-ktx-1.13.1-20 C:\Users\mluth\.gradle\caches\transforms-3\42c903c6acc5baef63e7ab7e3c2da03c\transformed\jetified-core-ktx-1.13.1\res
+com.example.myapp-jetified-savedstate-1.2.1-21 C:\Users\mluth\.gradle\caches\transforms-3\449f06b99da8c9c92f334a880ac85d40\transformed\jetified-savedstate-1.2.1\res
+com.example.myapp-jetified-activity-1.9.2-22 C:\Users\mluth\.gradle\caches\transforms-3\6102b12e609e8d81b0d4729fc7c9b009\transformed\jetified-activity-1.9.2\res
+com.example.myapp-jetified-window-java-1.2.0-23 C:\Users\mluth\.gradle\caches\transforms-3\630aec4ae4d6ac6553a90a894543b86a\transformed\jetified-window-java-1.2.0\res
+com.example.myapp-media-1.1.0-24 C:\Users\mluth\.gradle\caches\transforms-3\76a60410e4070a18c3810a2f426c8d4d\transformed\media-1.1.0\res
+com.example.myapp-lifecycle-viewmodel-2.7.0-25 C:\Users\mluth\.gradle\caches\transforms-3\82510b19671aed5739a8c86d0f82230f\transformed\lifecycle-viewmodel-2.7.0\res
+com.example.myapp-core-1.13.1-26 C:\Users\mluth\.gradle\caches\transforms-3\8c1066ecd759a2935e2fe2e3946db3a6\transformed\core-1.13.1\res
+com.example.myapp-webkit-1.12.1-27 C:\Users\mluth\.gradle\caches\transforms-3\a0716e283e4a58a8108e4b55da5e47d7\transformed\webkit-1.12.1\res
+com.example.myapp-jetified-core-1.0.0-28 C:\Users\mluth\.gradle\caches\transforms-3\a09a20def36a17c77d3d772e9cfeeb73\transformed\jetified-core-1.0.0\res
+com.example.myapp-jetified-firebase-common-20.4.3-29 C:\Users\mluth\.gradle\caches\transforms-3\a6577d217f06106e94fc6035e26f63e3\transformed\jetified-firebase-common-20.4.3\res
+com.example.myapp-jetified-lifecycle-livedata-core-ktx-2.7.0-30 C:\Users\mluth\.gradle\caches\transforms-3\a687f30e80e627203f337ebd1651aec3\transformed\jetified-lifecycle-livedata-core-ktx-2.7.0\res
+com.example.myapp-jetified-annotation-experimental-1.4.1-31 C:\Users\mluth\.gradle\caches\transforms-3\a6f13d2accefefe6097b421f2595c267\transformed\jetified-annotation-experimental-1.4.1\res
+com.example.myapp-jetified-datastore-1.0.0-32 C:\Users\mluth\.gradle\caches\transforms-3\b0441893fd210d4e3c073accb42d3d6c\transformed\jetified-datastore-1.0.0\res
+com.example.myapp-core-runtime-2.2.0-33 C:\Users\mluth\.gradle\caches\transforms-3\b76aa22617979dec988bf537f0b1454a\transformed\core-runtime-2.2.0\res
+com.example.myapp-lifecycle-runtime-2.7.0-34 C:\Users\mluth\.gradle\caches\transforms-3\ba4642cc2f7cbf101d78bb2d20d27e91\transformed\lifecycle-runtime-2.7.0\res
+com.example.myapp-lifecycle-livedata-2.7.0-35 C:\Users\mluth\.gradle\caches\transforms-3\c32fee825dd3ef24fef554a7f69bcd2a\transformed\lifecycle-livedata-2.7.0\res
+com.example.myapp-lifecycle-livedata-core-2.7.0-36 C:\Users\mluth\.gradle\caches\transforms-3\c66531294ca7adb3123facb35cbacf8e\transformed\lifecycle-livedata-core-2.7.0\res
+com.example.myapp-jetified-lifecycle-viewmodel-savedstate-2.7.0-37 C:\Users\mluth\.gradle\caches\transforms-3\cdef5606e9266ef823394ea219175f8d\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\res
+com.example.myapp-jetified-firebase-messaging-23.4.1-38 C:\Users\mluth\.gradle\caches\transforms-3\fb0f798619a977937b92742d320cae8a\transformed\jetified-firebase-messaging-23.4.1\res
+com.example.myapp-packaged_res-39 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-4.17.5\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-40 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-4.16.0\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-41 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-2.32.0\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-42 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_messaging-14.7.10\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-43 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_local_notifications-13.0.0\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-44 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.23\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-45 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.12+16\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-46 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.12\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-47 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.3.3\android\build\intermediates\packaged_res\debug
+com.example.myapp-packaged_res-48 C:\Users\mluth\AppData\Local\Pub\Cache\hosted\pub.dev\webview_flutter_android-4.0.0\android\build\intermediates\packaged_res\debug

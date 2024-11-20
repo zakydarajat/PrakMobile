@@ -5,35 +5,28 @@ import 'package:intl/intl.dart';
 
 class TaskController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   var tasksByDate = <String, List<Task>>{}.obs;
   var newTaskTitle = ''.obs;
   var newTaskDescription = ''.obs;
   var selectedDate = DateTime.now().obs;
   var selectedTime = TimeOfDay.now().obs;
+
   var isExpanded = <bool>[].obs; // Keeps track of expanded states
   var isTaskDone = <bool>[].obs; // Keeps track of task completion status
-  var viewAllTasks = false.obs; // Flag to control whether to show all tasks or only today's
-
+  var viewAllTasks =
+      false.obs; // Flag to control whether to show all tasks or only today's
   var expandedIndex = (-1).obs;
-
-  void toggleExpanded(int index) {
-    if (expandedIndex.value == index) {
-      expandedIndex.value = -1; // Collapse
-    } else {
-      expandedIndex.value = index; // Expand
-    }
-  }
 
   @override
   void onInit() {
     super.onInit();
-    _loadTasksFromFirestore();
+    _listenToTaskUpdates(); // Start listening for Firestore updates
   }
 
-  // Load tasks from Firestore
-  Future<void> _loadTasksFromFirestore() async {
-    try {
-      final snapshot = await firestore.collection('tasks').get();
+  // Real-time listener for Firestore changes
+  void _listenToTaskUpdates() {
+    firestore.collection('tasks').snapshots().listen((snapshot) {
       final tasks = snapshot.docs.map((doc) {
         final data = doc.data();
         return Task.fromMap(data)..id = doc.id;
@@ -48,9 +41,7 @@ class TaskController extends GetxController {
 
       tasksByDate.assignAll(groupedTasks);
       _initializeExpansionAndDoneStates();
-    } catch (e) {
-      print('Error loading tasks from Firestore: $e');
-    }
+    });
   }
 
   // Save a task to Firestore
@@ -94,16 +85,8 @@ class TaskController extends GetxController {
         done: false,
       );
 
-      tasksByDate.update(
-        formattedDate,
-        (existingTasks) => existingTasks..add(newTask),
-        ifAbsent: () => [newTask],
-      );
-
-      // Save to Firestore
+      // Save to Firestore (listener will handle UI updates)
       _saveTaskToFirestore(newTask);
-
-      _initializeExpansionAndDoneStates();
 
       // Reset input fields
       newTaskTitle.value = '';
@@ -115,12 +98,34 @@ class TaskController extends GetxController {
 
   // Toggle done state for a specific task
   void toggleTaskDone(int index) {
-    final task = displayedTasks[index];
-    task.done = !task.done;
-    isTaskDone[index] = task.done;
+    final task = displayedTasks[
+        index]; // Ambil task berdasarkan index dari displayedTasks
+    task.done = !task.done; // Toggle status selesai
+    isTaskDone[index] = task.done; // Update isTaskDone untuk UI
 
     // Update Firestore
     _updateTaskInFirestore(task);
+  }
+
+  // Edit task
+  void editTask(Task task, String newTitle, String newDescription) {
+    task.title = newTitle;
+    task.description = newDescription;
+
+    // Update Firestore
+    _updateTaskInFirestore(task);
+  }
+
+  // Delete task
+  Future<void> deleteTask(Task task) async {
+    try {
+      if (task.id != null) {
+        // Remove task from Firestore (listener will handle UI updates)
+        await firestore.collection('tasks').doc(task.id).delete();
+      }
+    } catch (e) {
+      print('Error deleting task: $e');
+    }
   }
 
   // Retrieve tasks for the selected date
@@ -134,24 +139,34 @@ class TaskController extends GetxController {
     return tasksByDate.values.expand((tasks) => tasks).toList();
   }
 
-  // Method to switch between viewing all tasks and tasks for the selected date
-  void showAllTasks() {
-    viewAllTasks.value = !viewAllTasks.value;
-    _initializeExpansionAndDoneStates(); // Update the expanded and done state lists when toggling views.
-  }
-
   // Get tasks based on the current view mode
   List<Task> get displayedTasks {
     return viewAllTasks.value ? allTasks : tasksForSelectedDate;
   }
 
+  // Toggle between all tasks and today's tasks
+  void showAllTasks() {
+    viewAllTasks.value = !viewAllTasks.value;
+    _initializeExpansionAndDoneStates(); // Update expanded and done state lists
+  }
+
   // Initialize the expanded state and done state lists
   void _initializeExpansionAndDoneStates() {
-    final taskCount = displayedTasks.length; // Adjust to match displayed tasks only
+    final taskCount = displayedTasks.length;
     isExpanded.value = List<bool>.filled(taskCount, false);
     isTaskDone.value = List<bool>.filled(taskCount, false);
+
     for (int i = 0; i < taskCount; i++) {
-      isTaskDone[i] = displayedTasks[i].done;
+      isTaskDone[i] =
+          displayedTasks[i].done; // Sinkronisasi dengan properti done
+    }
+  }
+
+  void toggleExpanded(int index) {
+    if (expandedIndex.value == index) {
+      expandedIndex.value = -1; // Collapse
+    } else {
+      expandedIndex.value = index; // Expand
     }
   }
 }
