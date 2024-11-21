@@ -5,6 +5,7 @@ import 'package:myapp/app/modules/task/bindings/http_binding.dart';
 import 'package:myapp/app/modules/task/views/http_view.dart';
 import 'package:myapp/app/modules/webview/bindings/webview_binding.dart';
 import 'package:myapp/app/modules/webview/views/webview_view.dart';
+import 'package:myapp/app/routes/app_pages.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final Color primaryColor = Color(0xff34794e);
@@ -65,7 +66,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 3,
             onTap: () {
               navBarController.updateIndex(3);
-              // Navigate to settings or implement settings logic
+              Get.toNamed(Routes.PROFILE);
             },
           ),
         ],
