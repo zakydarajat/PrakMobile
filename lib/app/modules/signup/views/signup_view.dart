@@ -19,7 +19,8 @@ class SignupView extends GetView<SignupController> {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -36,36 +37,26 @@ class SignupView extends GetView<SignupController> {
                 ),
                 SizedBox(height: 24),
                 _buildTextField(
-                  hint: 'Username',
-                  isPassword: false,
-                  fieldColor: fieldColor,
-                  onChanged: (value) => controller.username.value = value,
-                ),
-                SizedBox(height: 16),
-                _buildTextField(
                   hint: 'Email',
                   isPassword: false,
                   fieldColor: fieldColor,
                   onChanged: (value) => controller.email.value = value,
                 ),
                 SizedBox(height: 16),
-                Obx(() => _buildTextField(
-                      hint: 'Password',
-                      isPassword: true,
-                      isVisible: controller.isPasswordVisible.value,
-                      fieldColor: fieldColor,
-                      onVisibilityPressed: controller.togglePasswordVisibility,
-                      onChanged: (value) => controller.password.value = value,
-                    )),
+                _buildTextField(
+                  hint: 'Password',
+                  isPassword: true,
+                  fieldColor: fieldColor,
+                  onChanged: (value) => controller.password.value = value,
+                ),
                 SizedBox(height: 16),
-                Obx(() => _buildTextField(
-                      hint: 'Re-enter Password',
-                      isPassword: true,
-                      isVisible: controller.isRePasswordVisible.value,
-                      fieldColor: fieldColor,
-                      onVisibilityPressed: controller.toggleRePasswordVisibility,
-                      onChanged: (value) => controller.rePassword.value = value,
-                    )),
+                _buildTextField(
+                  hint: 'Re-enter Password',
+                  isPassword: true,
+                  fieldColor: fieldColor,
+                  onChanged: (value) =>
+                      controller.confirmPassword.value = value,
+                ),
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: controller.signup,
@@ -93,7 +84,7 @@ class SignupView extends GetView<SignupController> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      Get.toNamed(Routes.LOGIN);
+                      Get.toNamed('/login'); // Sesuai dengan controller
                     },
                     child: RichText(
                       text: TextSpan(
@@ -128,12 +119,10 @@ class SignupView extends GetView<SignupController> {
     required String hint,
     required Color fieldColor,
     bool isPassword = false,
-    bool isVisible = false,
-    Function()? onVisibilityPressed,
     Function(String)? onChanged,
   }) {
     return TextField(
-      obscureText: isPassword && !isVisible,
+      obscureText: isPassword,
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hint,
@@ -152,15 +141,6 @@ class SignupView extends GetView<SignupController> {
             width: 1.2,
           ),
         ),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  isVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.grey.shade600,
-                ),
-                onPressed: onVisibilityPressed,
-              )
-            : null,
       ),
       style: TextStyle(fontSize: 16),
     );

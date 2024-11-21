@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:myapp/app/modules/profile/bindings/profile_binding.dart';
+import 'package:myapp/app/modules/profile/views/profile_page.dart';
 import 'package:myapp/app/modules/task/bindings/http_binding.dart';
 import 'package:myapp/app/modules/task/views/http_view.dart';
 import 'package:myapp/app/modules/webview/bindings/webview_binding.dart';
@@ -40,6 +42,11 @@ class AppPages {
       name: _Paths.WEBVIEW,
       page: () => ToDoWebView(),
       binding: WebViewBinding(),
-    )
+    ),
+    GetPage(
+      name: Routes.PROFILE,
+      page: () => ProfilePage(),
+      binding: ProfileBinding(),
+    ),
   ];
 }

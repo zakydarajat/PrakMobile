@@ -15,6 +15,41 @@ class HomePage extends StatelessWidget {
     final textColor = Colors.black87;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        elevation: 0,
+        title: Text(
+          'Home',
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'profile') {
+                // Navigate to profile page
+                Get.toNamed('/profile');
+              } else if (value == 'logout') {
+                // Handle logout
+                _logout();
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                value: 'profile',
+                child: Text('Profile'),
+              ),
+              PopupMenuItem(
+                value: 'logout',
+                child: Text('Logout'),
+              ),
+            ],
+            icon: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
@@ -46,6 +81,37 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+//   Widget hamburger_build(BuildContext context) {
+//   final primaryColor = Color(0xff34794e);
+//   final backgroundColor = Colors.white;
+
+//   return Scaffold(
+//     backgroundColor: backgroundColor,
+//     appBar: AppBar(
+//       backgroundColor: primaryColor,
+//       elevation: 0,
+//       title: Text('Home', style: TextStyle(color: Colors.white)),
+//       actions: [
+//         HamburgerMenu(), // Menu hamburger dipanggil di sini
+//       ],
+//     ),
+//     body: Center(
+//       child: Text(
+//         'Welcome to Home Page!',
+//         style: TextStyle(fontSize: 24),
+//       ),
+//     ),
+//   );
+// }
+
+  // Fungsi logout
+  void _logout() {
+    // Tambahkan logika logout, seperti FirebaseAuth.instance.signOut();
+    Get.snackbar('Logged out', 'You have been logged out',
+        snackPosition: SnackPosition.BOTTOM);
+    Get.offAllNamed('/login');
   }
 
   Widget _buildHeader(Color primaryColor, Color accentColor, Color textColor) {
@@ -95,7 +161,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDatePicker(BuildContext context, Color primaryColor, Color textColor) {
+  Widget _buildDatePicker(
+      BuildContext context, Color primaryColor, Color textColor) {
     return GestureDetector(
       onTap: () async {
         final selectedDate = await showDatePicker(
@@ -235,8 +302,12 @@ class HomePage extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                taskController.isTaskDone[index] ? Colors.greenAccent.shade200 : color.withOpacity(0.9),
-                taskController.isTaskDone[index] ? Colors.green : color.withOpacity(0.6),
+                taskController.isTaskDone[index]
+                    ? Colors.greenAccent.shade200
+                    : color.withOpacity(0.9),
+                taskController.isTaskDone[index]
+                    ? Colors.green
+                    : color.withOpacity(0.6),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -412,7 +483,12 @@ class HomePage extends StatelessWidget {
               _buildTextField(
                 hintText: 'Task Description',
                 icon: Icons.description,
-                onChanged: (value) => taskController.newTaskDescription.value = value,
+                onChanged: (value) =>
+                    taskController.newTaskDescription.value = value,
+                enableSpeech: true,
+                onSpeechInput: () async {
+                  taskController.toggleListening();
+                },
               ),
               SizedBox(height: 16),
               GestureDetector(
@@ -420,7 +496,8 @@ class HomePage extends StatelessWidget {
                 child: _buildDateTimePicker(
                   label: 'Select Date',
                   icon: Icons.calendar_today,
-                  value: DateFormat('yMMMd').format(taskController.selectedDate.value),
+                  value: DateFormat('yMMMd')
+                      .format(taskController.selectedDate.value),
                 ),
               ),
               SizedBox(height: 16),
@@ -466,23 +543,43 @@ class HomePage extends StatelessWidget {
     required String hintText,
     required IconData icon,
     required Function(String) onChanged,
+    bool enableSpeech = false,
+    VoidCallback? onSpeechInput,
   }) {
-    return TextField(
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        hintText: hintText,
-        filled: true,
-        fillColor: Colors.grey.shade100,
-        prefixIcon: Icon(
-          icon,
-          color: Colors.grey.shade600,
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              hintText: hintText,
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              prefixIcon: Icon(
+                icon,
+                color: Colors.grey.shade600,
+              ),
+              suffixIcon: enableSpeech
+                  ? IconButton(
+                      icon: Icon(Icons.mic),
+                      onPressed: onSpeechInput,
+                    )
+                  : null,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-      ),
+        if (enableSpeech)
+          IconButton(
+            icon: Icon(Icons.mic, color: Colors.grey.shade600),
+            onPressed: onSpeechInput,
+          ),
+      ],
     );
   }
 

@@ -5,33 +5,22 @@ import 'package:get/get.dart';
 class SignupController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
-  var rePassword = ''.obs;
-  var username = ''.obs;
-
-  var isPasswordVisible = false.obs;
-  var isRePasswordVisible = false.obs;
+  var confirmPassword = ''.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Function to toggle password visibility
-  void togglePasswordVisibility() {
-    isPasswordVisible.value = !isPasswordVisible.value;
-  }
-
-  void toggleRePasswordVisibility() {
-    isRePasswordVisible.value = !isRePasswordVisible.value;
-  }
-
   // Function to validate signup form
   bool validateSignupForm() {
-    if (username.value.isEmpty || email.value.isEmpty || password.value.isEmpty || rePassword.value.isEmpty) {
+    if (email.value.isEmpty ||
+        password.value.isEmpty ||
+        confirmPassword.value.isEmpty) {
       Get.snackbar('Error', 'All fields are required',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
 
-    if (password.value != rePassword.value) {
+    if (password.value != confirmPassword.value) {
       Get.snackbar('Error', 'Passwords do not match',
           snackPosition: SnackPosition.BOTTOM);
       return false;
@@ -51,14 +40,14 @@ class SignupController extends GetxController {
     if (validateSignupForm()) {
       try {
         // Create user with Firebase Authentication
-        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
           email: email.value.trim(),
           password: password.value.trim(),
         );
 
         // Store additional user information in Firestore
         await _firestore.collection('users').doc(userCredential.user?.uid).set({
-          'username': username.value.trim(),
           'email': email.value.trim(),
           'createdAt': DateTime.now().toIso8601String(),
         });

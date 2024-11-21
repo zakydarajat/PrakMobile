@@ -2,9 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:audioplayers/audioplayers.dart';
 
 class TaskController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final stt.SpeechToText _speechToText = stt.SpeechToText();
 
   var tasksByDate = <String, List<Task>>{}.obs;
   var newTaskTitle = ''.obs;
@@ -12,16 +16,23 @@ class TaskController extends GetxController {
   var selectedDate = DateTime.now().obs;
   var selectedTime = TimeOfDay.now().obs;
 
-  var isExpanded = <bool>[].obs; // Keeps track of expanded states
-  var isTaskDone = <bool>[].obs; // Keeps track of task completion status
-  var viewAllTasks =
-      false.obs; // Flag to control whether to show all tasks or only today's
+  var isExpanded = <bool>[].obs;
+  var isTaskDone = <bool>[].obs;
+  var viewAllTasks = false.obs;
   var expandedIndex = (-1).obs;
+
+  // Speech-to-text control
+  var isListening = false.obs;
+
+  // Paths to sound files
+  String addSoundPath = 'sounds/add_task.mp3';
+  String editSoundPath = 'sounds/edit_task.mp3';
+  String deleteSoundPath = 'sounds/delete_task.mp3';
 
   @override
   void onInit() {
     super.onInit();
-    _listenToTaskUpdates(); // Start listening for Firestore updates
+    _listenToTaskUpdates();
   }
 
   // Real-time listener for Firestore changes
@@ -32,7 +43,6 @@ class TaskController extends GetxController {
         return Task.fromMap(data)..id = doc.id;
       }).toList();
 
-      // Group tasks by date
       final groupedTasks = <String, List<Task>>{};
       for (final task in tasks) {
         final formattedDate = DateFormat('yyyy-MM-dd').format(task.date);
@@ -44,11 +54,21 @@ class TaskController extends GetxController {
     });
   }
 
+  // Play sound based on action
+  Future<void> _playSound(String soundPath) async {
+    try {
+      await _audioPlayer.play(AssetSource(soundPath));
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
+  }
+
   // Save a task to Firestore
   Future<void> _saveTaskToFirestore(Task task) async {
     try {
       final docRef = await firestore.collection('tasks').add(task.toMap());
-      task.id = docRef.id; // Update task with the generated Firestore ID
+      task.id = docRef.id;
+      _playSound(addSoundPath); // Play add sound
     } catch (e) {
       print('Error saving task to Firestore: $e');
     }
@@ -59,16 +79,28 @@ class TaskController extends GetxController {
     try {
       if (task.id != null) {
         await firestore.collection('tasks').doc(task.id).update(task.toMap());
+        _playSound(editSoundPath); // Play edit sound when task is edited
       }
     } catch (e) {
       print('Error updating task in Firestore: $e');
     }
   }
 
+  // Delete a task
+  Future<void> deleteTask(Task task) async {
+    try {
+      if (task.id != null) {
+        await firestore.collection('tasks').doc(task.id).delete();
+        _playSound(deleteSoundPath); // Play delete sound
+      }
+    } catch (e) {
+      print('Error deleting task: $e');
+    }
+  }
+
   // Method to add a new task
   void addTask() {
     if (newTaskTitle.value.isNotEmpty) {
-      final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate.value);
       final taskDate = DateTime(
         selectedDate.value.year,
         selectedDate.value.month,
@@ -85,10 +117,8 @@ class TaskController extends GetxController {
         done: false,
       );
 
-      // Save to Firestore (listener will handle UI updates)
       _saveTaskToFirestore(newTask);
 
-      // Reset input fields
       newTaskTitle.value = '';
       newTaskDescription.value = '';
       selectedDate.value = DateTime.now();
@@ -96,14 +126,17 @@ class TaskController extends GetxController {
     }
   }
 
-  // Toggle done state for a specific task
+  // Toggle task done state
   void toggleTaskDone(int index) {
-    final task = displayedTasks[
-        index]; // Ambil task berdasarkan index dari displayedTasks
-    task.done = !task.done; // Toggle status selesai
-    isTaskDone[index] = task.done; // Update isTaskDone untuk UI
+    final task = displayedTasks[index];
+    task.done = !task.done;
+    isTaskDone[index] = task.done;
 
-    // Update Firestore
+    // Play sound only when task is marked as done
+    if (task.done) {
+      _playSound(editSoundPath);
+    }
+
     _updateTaskInFirestore(task);
   }
 
@@ -112,19 +145,27 @@ class TaskController extends GetxController {
     task.title = newTitle;
     task.description = newDescription;
 
-    // Update Firestore
     _updateTaskInFirestore(task);
+    _playSound(editSoundPath); // Play edit sound
   }
 
-  // Delete task
-  Future<void> deleteTask(Task task) async {
-    try {
-      if (task.id != null) {
-        // Remove task from Firestore (listener will handle UI updates)
-        await firestore.collection('tasks').doc(task.id).delete();
+  // Speech-to-text feature for task description
+  void toggleListening() async {
+    if (isListening.value) {
+      _speechToText.stop();
+      isListening.value = false;
+    } else {
+      final available = await _speechToText.initialize(
+        onStatus: (status) => print('Speech Status: $status'),
+        onError: (error) => print('Speech Error: $error'),
+      );
+
+      if (available) {
+        isListening.value = true;
+        _speechToText.listen(onResult: (result) {
+          newTaskDescription.value = result.recognizedWords;
+        });
       }
-    } catch (e) {
-      print('Error deleting task: $e');
     }
   }
 
@@ -147,7 +188,7 @@ class TaskController extends GetxController {
   // Toggle between all tasks and today's tasks
   void showAllTasks() {
     viewAllTasks.value = !viewAllTasks.value;
-    _initializeExpansionAndDoneStates(); // Update expanded and done state lists
+    _initializeExpansionAndDoneStates();
   }
 
   // Initialize the expanded state and done state lists
@@ -157,23 +198,21 @@ class TaskController extends GetxController {
     isTaskDone.value = List<bool>.filled(taskCount, false);
 
     for (int i = 0; i < taskCount; i++) {
-      isTaskDone[i] =
-          displayedTasks[i].done; // Sinkronisasi dengan properti done
+      isTaskDone[i] = displayedTasks[i].done;
     }
   }
 
   void toggleExpanded(int index) {
     if (expandedIndex.value == index) {
-      expandedIndex.value = -1; // Collapse
+      expandedIndex.value = -1;
     } else {
-      expandedIndex.value = index; // Expand
+      expandedIndex.value = index;
     }
   }
 }
 
-// Model class for a Task
 class Task {
-  String? id; // Firestore document ID
+  String? id;
   String title;
   String description;
   String time;
