@@ -21,13 +21,20 @@ class HttpView extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(
-              _taskController.viewAllTasks.value
-                  ? Icons.calendar_today
-                  : Icons.list,
+              Icons.calendar_today,
               color: Colors.white,
             ),
             onPressed: () {
               _taskController.showAllTasks();
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.add, // Ikon untuk menambah task
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _showAddTaskDialog(context); // Panggil dialog untuk menambah task
             },
           ),
         ],
@@ -130,13 +137,6 @@ class HttpView extends StatelessWidget {
             child: CustomBottomNavBar(),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
-        child: Icon(Icons.add),
-        onPressed: () {
-          _showAddTaskDialog(context);
-        },
       ),
       backgroundColor: backgroundColor,
     );
