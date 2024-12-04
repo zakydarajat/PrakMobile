@@ -16,7 +16,7 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 16, left: 20, right: 20),
-      height: 70,
+      height: 60,  // Reduced height for better proportion after removing the center button
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.8),
         borderRadius: BorderRadius.circular(30),
@@ -49,7 +49,6 @@ class CustomBottomNavBar extends StatelessWidget {
               Get.offAll(() => HttpView(), binding: HttpBinding());
             },
           ),
-          _buildCenterButton(),
           _buildNavItem(
             icon: Icons.info_outline,
             label: 'Info',
@@ -65,7 +64,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 3,
             onTap: () {
               navBarController.updateIndex(3);
-              // Navigate to settings or implement settings logic
+              Get.offAllNamed('profile');
             },
           ),
         ],
@@ -104,36 +103,6 @@ class CustomBottomNavBar extends StatelessWidget {
           ],
         );
       }),
-    );
-  }
-
-  Widget _buildCenterButton() {
-    return Container(
-      width: 58,
-      height: 58,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xff42a87b), primaryColor],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.3),
-            blurRadius: 15,
-            offset: Offset(0, 8),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(Icons.add, color: Colors.white, size: 30),
-        onPressed: () {
-          // Define the action for the central button here
-          // For example, navigate to a task creation page or open a modal
-          Get.toNamed('/add-task');
-        },
-      ),
     );
   }
 }

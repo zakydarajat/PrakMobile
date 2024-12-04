@@ -15,6 +15,12 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Profile"),
         backgroundColor: primaryColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.offAllNamed('/home');
+          },
+        ),
       ),
       body: SafeArea(
         child: Center(
