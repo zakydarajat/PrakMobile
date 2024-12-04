@@ -70,6 +70,8 @@ class HomePage extends StatelessWidget {
                       SizedBox(height: 16),
                       _buildAddTaskCard(context),
                       SizedBox(height: 24),
+                      _buildLocateMeButton(primaryColor, textColor),  // Tambahkan tombol di sini
+                      SizedBox(height: 24),
                       _buildTaskList(primaryColor, textColor),
                     ],
                   ),
@@ -158,6 +160,31 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildLocateMeButton(Color primaryColor, Color textColor) {
+    return ElevatedButton(
+      onPressed: () {
+        // Arahkan ke halaman lokasi (misalnya halaman '/location')
+        Get.toNamed('/maps');
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 16),
+        elevation: 5,
+      ),
+      child: Text(
+        'Locate Me',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

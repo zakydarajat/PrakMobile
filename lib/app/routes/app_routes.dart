@@ -7,6 +7,7 @@ abstract class Routes {
   static const HTTP = _Paths.HTTP;
   static const WEBVIEW = _Paths.WEBVIEW;
   static const PROFILE = _Paths.PROFILE;
+  static const MAPS = _Paths.MAPS;
 }
 
 abstract class _Paths {
@@ -16,4 +17,5 @@ abstract class _Paths {
   static const HTTP = '/http_view';
   static const WEBVIEW = '/web_view';
   static const PROFILE = '/profile';
+  static const MAPS = '/maps';
 }

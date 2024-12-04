@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:myapp/app/modules/maps/bindings/maps_binding.dart';
+import 'package:myapp/app/modules/maps/views/maps_view.dart';
 import 'package:myapp/app/modules/profile/bindings/profile_binding.dart';
 import 'package:myapp/app/modules/profile/views/profile_page.dart';
 import 'package:myapp/app/modules/task/bindings/http_binding.dart';
@@ -47,6 +49,11 @@ class AppPages {
       name: Routes.PROFILE,
       page: () => ProfilePage(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.MAPS,
+      page: () => MapsView(),
+      binding: MapsBinding(),
     ),
   ];
 }
