@@ -3,13 +3,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart'; // Menambahkan url_launcher
 
 class MapsController extends GetxController {
   Rx<Position?> currentPosition = Rx<Position?>(null); // Lokasi pengguna saat ini
-  Rx<GoogleMapController?> mapController = Rx<GoogleMapController?>(null);
-  RxSet<Marker> markers = <Marker>{}.obs; // Marker untuk peta
   RxString latitude = ''.obs; // Latitude yang ditampilkan
   RxString longitude = ''.obs; // Longitude yang ditampilkan
 
@@ -20,6 +17,7 @@ class MapsController extends GetxController {
     getCurrentLocation();
   }
 
+  // Cek izin lokasi
   Future<void> checkPermissions() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
@@ -35,6 +33,7 @@ class MapsController extends GetxController {
     }
   }
 
+  // Mendapatkan lokasi saat ini
   Future<void> getCurrentLocation() async {
     try {
       bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
@@ -55,15 +54,13 @@ class MapsController extends GetxController {
       latitude.value = position.latitude.toStringAsFixed(6);
       longitude.value = position.longitude.toStringAsFixed(6);
 
-      // Tambahkan marker di lokasi pengguna
-      updateMarker(LatLng(position.latitude, position.longitude));
-
-      // Pindahkan kamera ke lokasi pengguna saat ini
-      mapController.value?.animateCamera(
-        CameraUpdate.newLatLngZoom(
-          LatLng(position.latitude, position.longitude),
-          14,
-        ),
+      // Menampilkan snackbar dengan posisi terkini
+      Get.snackbar(
+        "Current Location",
+        "Lat: ${position.latitude}, Lng: ${position.longitude}",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
     } catch (e) {
       Get.snackbar(
@@ -74,6 +71,7 @@ class MapsController extends GetxController {
     }
   }
 
+  // Mencari lokasi berdasarkan nama (alamat)
   Future<void> searchLocation(String query) async {
     try {
       if (query.isEmpty) {
@@ -85,7 +83,7 @@ class MapsController extends GetxController {
         return;
       }
 
-      // Cek apakah input berupa koordinat (format: lat,lng)
+      // Jika input berupa koordinat (lat,lng)
       if (query.contains(',')) {
         final parts = query.split(',');
         if (parts.length == 2) {
@@ -94,15 +92,10 @@ class MapsController extends GetxController {
 
           if (lat != null && lng != null) {
             // Update lokasi berdasarkan koordinat
-            final newLatLng = LatLng(lat, lng);
             latitude.value = lat.toStringAsFixed(6);
             longitude.value = lng.toStringAsFixed(6);
 
-            updateMarker(newLatLng);
-            mapController.value?.animateCamera(
-              CameraUpdate.newLatLngZoom(newLatLng, 14),
-            );
-
+            // Menampilkan snackbar dengan lokasi baru
             Get.snackbar(
               "Coordinates Found",
               "Moved to: $lat, $lng",
@@ -110,6 +103,10 @@ class MapsController extends GetxController {
               backgroundColor: Colors.green,
               colorText: Colors.white,
             );
+
+            // Menambahkan fungsi untuk membuka Google Maps
+            openGoogleMaps(lat, lng);
+
             return;
           }
         }
@@ -119,15 +116,8 @@ class MapsController extends GetxController {
       List<Location> locations = await locationFromAddress(query);
       if (locations.isNotEmpty) {
         final location = locations.first;
-        final newLatLng = LatLng(location.latitude, location.longitude);
-
         latitude.value = location.latitude.toStringAsFixed(6);
         longitude.value = location.longitude.toStringAsFixed(6);
-
-        updateMarker(newLatLng);
-        mapController.value?.animateCamera(
-          CameraUpdate.newLatLngZoom(newLatLng, 14),
-        );
 
         Get.snackbar(
           "Location Found",
@@ -136,6 +126,9 @@ class MapsController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+
+        // Menambahkan fungsi untuk membuka Google Maps
+        openGoogleMaps(location.latitude, location.longitude);
       } else {
         Get.snackbar(
           "Error",
@@ -156,44 +149,15 @@ class MapsController extends GetxController {
     }
   }
 
-  void updateMarker(LatLng location) {
-    markers.clear();
-    final newMarker = Marker(
-      markerId: MarkerId(location.toString()),
-      position: location,
-      infoWindow: InfoWindow(
-        title: "Selected Location",
-        snippet: "Lat: ${location.latitude}, Lng: ${location.longitude}",
-      ),
-    );
-    markers.add(newMarker);
-  }
-
-  Future<void> openGoogleMaps(LatLng destination) async {
-    final googleMapsUrl =
-        "https://www.google.com/maps/search/?api=1&query=${destination.latitude},${destination.longitude}";
-    if (await canLaunch(googleMapsUrl)) {
-      await launch(googleMapsUrl);
+  // Membuka Google Maps menggunakan koordinat
+  Future<void> openGoogleMaps(double lat, double lng) async {
+    final url = "https://www.google.com/maps?q=$lat,$lng";
+    if (await canLaunch(url)) {
+      await launch(url); // Membuka Google Maps
     } else {
       Get.snackbar(
         "Error",
         "Could not open Google Maps",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  Future<void> openGoogleMapsRoute(LatLng destination) async {
-    final googleMapsRouteUrl =
-        "https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}";
-    if (await canLaunch(googleMapsRouteUrl)) {
-      await launch(googleMapsRouteUrl);
-    } else {
-      Get.snackbar(
-        "Error",
-        "Could not open Google Maps for route",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,

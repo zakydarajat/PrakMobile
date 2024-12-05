@@ -164,29 +164,37 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildLocateMeButton(Color primaryColor, Color textColor) {
-    return ElevatedButton(
-      onPressed: () {
-        // Arahkan ke halaman lokasi (misalnya halaman '/location')
-        Get.toNamed('/maps');
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 16),
-        elevation: 5,
-      ),
-      child: Text(
-        'Locate Me',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20), // Memberikan margin kiri dan kanan
+        width: double.infinity, // Membuat tombol lebih lebar
+        child: ElevatedButton(
+          onPressed: () {
+            // Arahkan ke halaman lokasi (misalnya halaman '/maps')
+            Get.toNamed('/maps');
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 16), // Padding lebih tinggi untuk tampilan lebih besar
+            elevation: 5,
+          ),
+          child: Text(
+            'Locate Me',
+            style: TextStyle(
+              fontSize: 18, // Ukuran font lebih besar
+              fontWeight: FontWeight.bold,
+              color: textColor, // Menggunakan parameter textColor
+              letterSpacing: 1.2, // Spasi antar huruf agar lebih modern
+            ),
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildDatePicker(
       BuildContext context, Color primaryColor, Color textColor) {

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
 import '../controllers/maps_controller.dart';
 
 class MapsView extends GetView<MapsController> {
   final TextEditingController searchController = TextEditingController();
-  final RxBool hasText =
-      false.obs; // Untuk memantau apakah ada teks di search bar
+  final RxBool hasText = false.obs; // Untuk memantau apakah ada teks di search bar
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +26,24 @@ class MapsView extends GetView<MapsController> {
 
         return Stack(
           children: [
-            // Google Map
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(position.latitude, position.longitude),
-                zoom: 14,
-              ),
-              onMapCreated: (GoogleMapController googleMapController) {
-                controller.mapController.value = googleMapController;
-
-                // Pindahkan kamera ke lokasi pengguna
-                googleMapController.animateCamera(
-                  CameraUpdate.newLatLngZoom(
-                    LatLng(position.latitude, position.longitude),
-                    14,
+            // Tampilan yang menampilkan koordinat dan lat-lng pengguna
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Current Location",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.indigo,
+                    ),
                   ),
-                );
-              },
-              markers: controller.markers,
+                  SizedBox(height: 20),
+                  Text("Latitude: ${controller.latitude.value}"),
+                  Text("Longitude: ${controller.longitude.value}"),
+                ],
+              ),
             ),
 
             // Search Bar
@@ -120,44 +119,58 @@ class MapsView extends GetView<MapsController> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Coordinates",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.indigo,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Coordinates",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.copy, color: Colors.blue),
+                            onPressed: () {
+                              final coordinates = '${controller.latitude.value}, ${controller.longitude.value}';
+                              // Menyalin koordinat ke clipboard
+                              // Anda bisa menggunakan package flutter/services untuk menyalin ke clipboard
+                            },
+                            tooltip: "Copy Coordinates",
+                          ),
+                        ],
                       ),
                       SizedBox(height: 5),
                       Text("Latitude: ${controller.latitude.value}"),
                       Text("Longitude: ${controller.longitude.value}"),
                       SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.map, color: Colors.blue),
-                            onPressed: () {
-                              if (controller.markers.isNotEmpty) {
-                                final marker =
-                                    controller.markers.first.position;
-                                controller.openGoogleMaps(marker);
-                              }
-                            },
-                            tooltip: "Open in Google Maps",
+
+                      // Tombol untuk membuka Google Maps
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final lat = controller.latitude.value;
+                            final lng = controller.longitude.value;
+                            final url = "https://www.google.com/maps?q=$lat,$lng";
+                            _openGoogleMaps(url);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.directions, color: Colors.green),
-                            onPressed: () {
-                              if (controller.markers.isNotEmpty) {
-                                final marker =
-                                    controller.markers.first.position;
-                                controller.openGoogleMapsRoute(marker);
-                              }
-                            },
-                            tooltip: "Get Directions",
+                          child: Text(
+                            "Open in Google Maps",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -168,5 +181,20 @@ class MapsView extends GetView<MapsController> {
         );
       }),
     );
+  }
+
+  // Fungsi untuk membuka Google Maps dengan URL
+  void _openGoogleMaps(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      Get.snackbar(
+        "Error",
+        "Could not open Google Maps",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 }
