@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:get_storage/get_storage.dart';
 
 class TaskController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final AudioPlayer _audioPlayer = AudioPlayer();
   final stt.SpeechToText _speechToText = stt.SpeechToText();
+  final box = GetStorage(); // GetStorage instance
+  final connectivity = Connectivity(); // Connectivity instance
 
   var tasksByDate = <String, List<Task>>{}.obs;
   var newTaskTitle = ''.obs;
@@ -33,6 +37,44 @@ class TaskController extends GetxController {
   void onInit() {
     super.onInit();
     _listenToTaskUpdates();
+    _monitorConnectivity(); // Monitor connectivity changes
+    _uploadPendingTasks(); // Try uploading any pending tasks on startup
+  }
+
+  void _monitorConnectivity() {
+    connectivity.onConnectivityChanged.listen((status) {
+      if (status != ConnectivityResult.none) {
+        _uploadPendingTasks(); // Coba unggah data lokal saat terhubung ke internet
+      }
+    });
+  }
+
+  Future<void> _saveTaskLocally(Task task) async {
+    final pendingTasks = box.read<List<dynamic>>('pending_tasks') ?? [];
+    pendingTasks.add(task.toMap());
+    await box.write('pending_tasks', pendingTasks);
+    print('Task saved locally: ${task.title}');
+  }
+
+  // Coba unggah semua tugas yang tersimpan di penyimpanan lokal
+  Future<void> _uploadPendingTasks() async {
+    final pendingTasks = box.read<List<dynamic>>('pending_tasks') ?? [];
+
+    for (final taskMap in pendingTasks) {
+      final task = Task.fromMap(Map<String, dynamic>.from(taskMap));
+      try {
+        await _saveTaskToFirestore(task); // Coba unggah ke Firestore
+      } catch (e) {
+        print('Error uploading task from local storage: $e');
+        return; // Jika gagal, hentikan dan coba lagi nanti
+      }
+    }
+
+    // Jika semua berhasil diunggah, hapus data lokal
+    if (pendingTasks.isNotEmpty) {
+      await box.remove('pending_tasks');
+      print('All pending tasks uploaded and local storage cleared.');
+    }
   }
 
   // Real-time listener for Firestore changes
@@ -69,8 +111,10 @@ class TaskController extends GetxController {
       final docRef = await firestore.collection('tasks').add(task.toMap());
       task.id = docRef.id;
       _playSound(addSoundPath); // Play add sound
+      print('Task uploaded to Firestore: ${task.title}');
     } catch (e) {
-      print('Error saving task to Firestore: $e');
+      print('No internet connection. Saving task locally.');
+      await _saveTaskLocally(task); // Simpan ke lokal jika gagal unggah
     }
   }
 
