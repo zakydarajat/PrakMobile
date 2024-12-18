@@ -7,7 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapsController extends GetxController {
-  Rx<Position?> currentPosition = Rx<Position?>(null); // Lokasi pengguna saat ini
+  Rx<Position?> currentPosition =
+      Rx<Position?>(null); // Lokasi pengguna saat ini
   Rx<GoogleMapController?> mapController = Rx<GoogleMapController?>(null);
   RxSet<Marker> markers = <Marker>{}.obs; // Marker untuk peta
   RxString latitude = ''.obs; // Latitude yang ditampilkan

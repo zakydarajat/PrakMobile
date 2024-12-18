@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/app/modules/signup/controllers/signup_controllers.dart';
-import 'package:myapp/app/routes/app_pages.dart';
 
 class SignupView extends GetView<SignupController> {
   @override

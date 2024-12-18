@@ -32,6 +32,14 @@ class SignupController extends GetxController {
       return false;
     }
 
+    // Email validation (basic regex check)
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email.value)) {
+      Get.snackbar('Error', 'Please enter a valid email address',
+          snackPosition: SnackPosition.BOTTOM);
+      return false;
+    }
+
     return true;
   }
 
@@ -50,15 +58,38 @@ class SignupController extends GetxController {
         await _firestore.collection('users').doc(userCredential.user?.uid).set({
           'email': email.value.trim(),
           'createdAt': DateTime.now().toIso8601String(),
+        }).then((_) {
+          // Success: show success message
+          Get.snackbar('Success', 'Account created successfully!',
+              snackPosition: SnackPosition.BOTTOM);
+
+          // Navigate to login page
+          Get.toNamed('/login');
+        }).catchError((e) {
+          // If there was an error writing to Firestore, delete user from Firebase Authentication
+          userCredential.user?.delete();
+          Get.snackbar(
+              'Firestore Error', 'Failed to save user data. Please try again.',
+              snackPosition: SnackPosition.BOTTOM);
         });
-
-        Get.snackbar('Success', 'Account created successfully!',
-            snackPosition: SnackPosition.BOTTOM);
-
-        // Navigate to login page
-        Get.toNamed('/login');
       } catch (e) {
-        Get.snackbar('Signup Error', e.toString(),
+        String errorMessage = 'Signup Error: Please try again later.';
+        if (e is FirebaseAuthException) {
+          switch (e.code) {
+            case 'email-already-in-use':
+              errorMessage = 'The email address is already in use.';
+              break;
+            case 'invalid-email':
+              errorMessage = 'The email address is not valid.';
+              break;
+            case 'weak-password':
+              errorMessage = 'The password is too weak.';
+              break;
+            default:
+              errorMessage = e.message ?? 'Unknown error occurred.';
+          }
+        }
+        Get.snackbar('Signup Error', errorMessage,
             snackPosition: SnackPosition.BOTTOM);
       }
     }

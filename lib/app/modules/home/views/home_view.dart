@@ -70,7 +70,8 @@ class HomePage extends StatelessWidget {
                       SizedBox(height: 16),
                       _buildAddTaskCard(context),
                       SizedBox(height: 24),
-                      _buildLocateMeButton(primaryColor, textColor),  // Tambahkan tombol di sini
+                      _buildLocateMeButton(
+                          primaryColor, textColor), // Tambahkan tombol di sini
                       SizedBox(height: 24),
                       _buildTaskList(primaryColor, textColor),
                     ],
@@ -164,25 +165,41 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildLocateMeButton(Color primaryColor, Color textColor) {
-    return ElevatedButton(
-      onPressed: () {
-        // Arahkan ke halaman lokasi (misalnya halaman '/location')
+    return GestureDetector(
+      onTap: () {
         Get.toNamed('/maps');
       },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+      child: Container(
+        width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16),
-        elevation: 5,
-      ),
-      child: Text(
-        'Locate Me',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              primaryColor,
+              Color(0xff8bdc8b)
+            ], // Gradient hijau ke terang
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: Offset(0, 2), // Shadow di bawah tombol
+            ),
+          ],
+        ),
+        child: Text(
+          'Locate Me',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.2, // Menambah jarak antar huruf
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

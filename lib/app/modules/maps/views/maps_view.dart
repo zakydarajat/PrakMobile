@@ -5,16 +5,18 @@ import '../controllers/maps_controller.dart';
 
 class MapsView extends GetView<MapsController> {
   final TextEditingController searchController = TextEditingController();
-  final RxBool hasText =
-      false.obs; // Untuk memantau apakah ada teks di search bar
+  final RxBool hasText = false.obs; // Untuk memantau apakah teks
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Maps Explorer"),
+        title: Text(
+          "Maps Explorer",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.lightBlue.shade800,
+        backgroundColor: const Color.fromARGB(255, 1, 100, 3),
       ),
       body: Obx(() {
         final position = controller.currentPosition.value;

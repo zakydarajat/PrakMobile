@@ -13,13 +13,20 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/home/bindings/home_bindings.dart';
 import '../modules/home/views/home_view.dart';
+import 'package:myapp/app/modules/splash/views/splash_screen.dart';
+import 'package:myapp/app/modules/splash/bindings/splash_binding.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
-  static const INITIAL = Routes.SIGNUP;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => SplashScreen(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       name: _Paths.SIGNUP,
       page: () => SignupView(),

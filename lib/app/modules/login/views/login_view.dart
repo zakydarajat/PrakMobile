@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/login_controller.dart';
+import 'package:myapp/app/modules/login/controllers/login_controller.dart';
 import '../../signup/views/signup_view.dart';
 import 'package:myapp/app/routes/app_pages.dart';
 
@@ -18,7 +18,8 @@ class LoginView extends GetView<LoginController> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -26,7 +27,8 @@ class LoginView extends GetView<LoginController> {
                 Center(
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('assets/app_logo.png'), // Add your app logo here
+                    backgroundImage: AssetImage(
+                        'assets/app_logo.png'), // Add your app logo here
                     backgroundColor: Colors.transparent,
                   ),
                 ),
@@ -184,9 +186,9 @@ class LoginView extends GetView<LoginController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildSocialButton('assets/google_logo.png', borderColor),
+        _buildSocialButton('assets/images/google_logo.png', borderColor),
         SizedBox(width: 16),
-        _buildSocialButton('assets/facebook_logo.png', borderColor),
+        _buildSocialButton('assets/images/facebook_logo.png', borderColor),
       ],
     );
   }
